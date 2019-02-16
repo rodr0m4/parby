@@ -8,12 +8,25 @@ module Convoy
 
   # Yields the input, if it matches the regex passed to it
   def regexp(regex)
-    regexp_with_consume(regex, false)
+    # We have to match from the beginning
+    real_regex = /^#{regex}/
+
+    Parser.new do |input, index|
+      match_data = real_regex.match(input)
+
+      if match_data.nil?
+        # We did not even match one letter
+        Failure.new(index, [regex], input)
+      else
+        # We did match, but there is still more to consume
+        Success.new(index, match_data[0], input)
+      end
+    end
   end
 
   # Like #regexp, but it consumes the input
   def cregexp(regex)
-    regexp_with_consume(regex, true)
+    regexp(regex).consuming
   end
 
   # Searches in the input for one of the given characters (characters can be either a string or an array), and yields it
@@ -34,27 +47,39 @@ module Convoy
       end
     end
   end
-end
 
-# Non exposed Convoy combinators
-module Convoy
-  private
+  # Looks for the matching string (or regex) at the start of input, does not consume it
+  def lookahead(string_or_regexp)
+    if string_or_regexp.is_a?(Regexp)
+      return regexp(string_or_regexp).non_consuming
+    else
+      return string(string_or_regexp)
+    end
+  end
 
-  # Yields the input, if it matches the regex passed to it, it consumes it if should_consume is true
-  def regexp_with_consume(regex, should_consume)
-    # We have to match from the beginning
-    real_regex = /^#{regex}/
 
+  def string(str)
     Parser.new do |input, index|
-      match_data = real_regex.match(input)
+      furthest = -1
 
-      if match_data.nil?
-        # We did not even match one letter
-        Failure.new(index, [regex], input)
+      str.split('').each_with_index do |expected_character, expected_index|
+        actual_character = input[expected_index]
+
+        if actual_character.nil?
+          # This means that the input is smaller than the expected string
+          furthest = expected_index - 1
+          break
+        elsif actual_character != expected_character
+          # This means the input does not match exactly the string
+          furthest = expected_index
+          break
+        end
+      end
+
+      if furthest == -1
+        Success.new(index, str)
       else
-        remaining = if should_consume then match_data.post_match else input end
-        # We did match, but there is still more to consume
-        Success.new(index, match_data[0], remaining)
+        Failure.new(furthest, [str])
       end
     end
   end

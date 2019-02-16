@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Convoy, 'combinators' do
-  context 'Convoy::of' do
+  context 'Convoy#of' do
     parser = Convoy.of(2)
 
     it 'Always succeeds' do
@@ -13,7 +13,7 @@ describe Convoy, 'combinators' do
     end
   end
 
-  context 'Convoy::cregexp' do
+  context 'Convoy#cregexp' do
     parser = Convoy.cregexp(/[0-9]0+/)
 
     it 'yields the string on match, and consumes it' do
@@ -45,7 +45,7 @@ describe Convoy, 'combinators' do
     end
   end
 
-  context 'Convoy::regexp' do
+  context 'Convoy#regexp' do
     parser = Convoy.regexp(/[0-9]0+/)
     it 'is like regexp, but it does not consume the string it matches' do
       result = parser.parse('100j')
@@ -58,7 +58,7 @@ describe Convoy, 'combinators' do
     end
   end
 
-  context 'Convoy::one_of' do
+  context 'Convoy#one_of' do
     parser = Convoy.one_of('123')
 
     it 'looks for exactly one character from the given string, and yields that character' do
@@ -77,6 +77,47 @@ describe Convoy, 'combinators' do
       expect(result.remaining).to eq('123')
 
       expect(result.value).to eq('1')
+    end
+  end
+
+  context 'Convoy#string' do
+    parser = Convoy.string('Hi!')
+
+    it 'matches whole string and consumes it' do
+      result = parser.parse 'Hi!'
+
+      expect(result.succeed?).to be true
+      expect(result.value).to eq 'Hi!'
+    end
+
+    it 'Fails gracefully: says the piece of the string that it matched' do
+      result = parser.parse 'Hi'
+
+      expect(result.failed?).to be true
+      expect(result.expected).to eq ['Hi!']
+      expect(result.furthest).to eq 1
+    end
+  end
+
+  context 'Convoy#lookahead' do
+    it 'can lookahead over one token' do
+      parser = Convoy.lookahead('/')
+      input = '/ Im a comment!'
+
+      result = parser.parse input # Typical lookahead scenario
+
+      expect(result.succeed?).to be true
+      expect(result.remaining).to be input
+    end
+
+    it 'can lookahead over a regex' do
+      parser = Convoy.lookahead(/[0-9]/)
+      input = '6kkkk'
+
+      result = parser.parse input
+
+      expect(result.succeed?).to be true
+      expect(result.remaining).to be input
     end
   end
 end
