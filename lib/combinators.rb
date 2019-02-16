@@ -57,7 +57,6 @@ module Convoy
     end
   end
 
-
   def string(str)
     Parser.new do |input, index|
       furthest = -1

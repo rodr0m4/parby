@@ -43,6 +43,18 @@ describe Convoy, 'combinators' do
 
       expect(result.expected).to eq([/[0-9]0+/])
     end
+
+    it 'a bug' do
+      parser = Convoy.regexp(/[0-9]/)
+      input = '6'
+
+      result = parser.parse input
+
+      expect(result.succeed?).to be true
+      expect(result.completed?).to be true
+
+      expect(result.value).to eq '6'
+    end
   end
 
   context 'Convoy#regexp' do
