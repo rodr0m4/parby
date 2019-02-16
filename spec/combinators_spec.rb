@@ -19,7 +19,7 @@ describe Convoy, 'combinators' do
     it 'yields the string on match, and consumes it' do
       result = parser.parse('100j')
 
-      expect(result.succeded?).to be true
+      expect(result.succeed?).to be true
       expect(result.completed?).to be false
       expect(result.remaining).to eq('j')
 
@@ -29,7 +29,7 @@ describe Convoy, 'combinators' do
     it 'succeds and completes when matches the whole string' do
       result = parser.parse('100')
 
-      expect(result.succeded?).to be true
+      expect(result.succeed?).to be true
       expect(result.completed?).to be true
 
       expect(result.value).to eq('100')
@@ -38,7 +38,7 @@ describe Convoy, 'combinators' do
     it 'fails when does not match the regex from the start' do
       result = parser.parse('j100')
 
-      expect(result.succeded?).to be false
+      expect(result.succeed?).to be false
       expect(result.completed?).to be false
 
       expect(result.expected).to eq([/[0-9]0+/])
@@ -50,7 +50,7 @@ describe Convoy, 'combinators' do
     it 'is like regexp, but it does not consume the string it matches' do
       result = parser.parse('100j')
 
-      expect(result.succeded?).to be true
+      expect(result.succeed?).to be true
       expect(result.completed?).to be false
       expect(result.remaining).to eq('100j')
 

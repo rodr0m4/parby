@@ -35,14 +35,14 @@ describe Parser, '#|' do
     it('When the first one succeeds it yields, not calling the second one') do
       result = parser.parse('42')
 
-      expect(result.succeded?).to be true
+      expect(result.succeed?).to be true
       expect(result.value).to eq('42')
     end
 
     it('When the first one succeeds it calls the second one') do
       result = parser.parse('lol')
 
-      expect(result.succeded?).to be true
+      expect(result.succeed?).to be true
       expect(result.value).to eq(42)
     end
   end
@@ -58,7 +58,7 @@ describe Parser, '#>>' do
 
       result = parser.parse('00')
 
-      expect(result.succeded?).to be true
+      expect(result.succeed?).to be true
       expect(result.value).to eq('00')
     end
 
@@ -82,7 +82,7 @@ describe Parser, '#map' do
     it('when the parser yields, it will apply the block to the resulting value') do
       result = parser.parse('42')
 
-      expect(result.succeded?).to be true
+      expect(result.succeed?).to be true
       expect(result.value).to eq(42)
     end
 

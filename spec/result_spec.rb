@@ -6,7 +6,7 @@ describe Result do
 
     it 'when the status is false' do
       expect(result.failed?).to be true
-      expect(result.succeded?).to be false
+      expect(result.succeed?).to be false
     end
   end
 
@@ -15,7 +15,7 @@ describe Result do
 
     it 'when the status is true' do
       expect(result.failed?).to be false
-      expect(result.succeded?).to be true
+      expect(result.succeed?).to be true
     end
   end
 end

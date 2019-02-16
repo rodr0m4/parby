@@ -51,7 +51,7 @@ module Convoy
       Parser.new do |input, index|
         result = parse(input, index)
 
-        if result.succeded?
+        if result.succeed?
           result.value = yield(result.value)
         end
 
@@ -69,7 +69,7 @@ module Convoy
       !status
     end
 
-    def succeded?
+    def succeed?
       status
     end
 
