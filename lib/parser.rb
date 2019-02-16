@@ -46,6 +46,18 @@ module Convoy
     def >>(other)
       self.and other
     end
+
+    def map(&block)
+      Parser.new do |input, index|
+        result = parse(input, index)
+
+        if result.succeded?
+          result.value = yield(result.value)
+        end
+
+        result
+      end
+    end
   end
 
   Result = Struct.new('Result', :status, :index, :value, :furthest, :expected, :remaining) do

@@ -51,11 +51,11 @@ end
 describe Parser, '#>>' do
   context('Given two parsers') do
     first_parser = Convoy.regexp(/0/)
-    second_parser = spy(Convoy.regexp(/[0-9]+/))
-
-    parser = first_parser >> second_parser
 
     it('Both should have to match to succeed, but only the second value is yielded') do
+      second_parser = Convoy.regexp(/[0-9]+/)
+      parser = first_parser >> second_parser
+
       result = parser.parse('00')
 
       expect(result.succeded?).to be true
@@ -63,10 +63,29 @@ describe Parser, '#>>' do
     end
 
     it('When the first one fails, the other one is not called') do
+      second_parser = spy(Convoy.regexp(/[0-9]+/))
+      parser = first_parser >> second_parser
+
       result = parser.parse('lol')
 
       expect(result.failed?).to be true
       expect(second_parser).to_not have_received(:parse)
     end
+  end
+end
+
+describe Parser, '#map' do
+  context('Given a parser mapped with a mapping block') do
+    first_parser = Parser.regexp(/42/)
+    parser = first_parser.map(&:to_i)
+
+    it('when the parser yields, it will apply the block to the resulting value') do
+      result = parser.parse('42')
+
+      expect(result.succeded?).to be true
+      expect(result.value).to eq(42)
+    end
+
+    # We still have to test for not calling the mapper function when the parser fails, but I can't mock the block :(
   end
 end
