@@ -57,4 +57,26 @@ describe Convoy, 'combinators' do
       expect(result.value).to eq('100')
     end
   end
+
+  context 'Convoy::one_of' do
+    parser = Convoy.one_of('123')
+
+    it 'looks for exactly one character from the given string, and yields that character' do
+      result = parser.parse('jmvbn2')
+
+      expect(result.succeed?).to be true
+      expect(result.remaining).to eq('jmvbn2')
+
+      expect(result.value).to eq('2')
+    end
+
+    it 'it short circuits' do
+      result = parser.parse('123')
+
+      expect(result.succeed?).to be true
+      expect(result.remaining).to eq('123')
+
+      expect(result.value).to eq('1')
+    end
+  end
 end

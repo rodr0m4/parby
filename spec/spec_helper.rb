@@ -1,5 +1,6 @@
 require './lib/combinators.rb'
 require './lib/parser.rb'
+require './lib/result.rb'
 
 include RSpec
 include Convoy
