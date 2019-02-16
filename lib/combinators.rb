@@ -67,4 +67,10 @@ module Convoy
       end
     end
   end
+
+  def all
+    Parser.new do |input, index|
+      Success.new(index, input, nil)
+    end
+  end
 end

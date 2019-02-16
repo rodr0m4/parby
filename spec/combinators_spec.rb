@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Convoy, 'combinators' do
-  context 'Convoy#of' do
+describe Convoy, '#of' do
+  describe '#of' do
     parser = Convoy.of(2)
 
     it 'Always succeeds' do
@@ -13,42 +13,10 @@ describe Convoy, 'combinators' do
     end
   end
 
-  # context 'Convoy#cregexp' do
-  #   parser = Convoy.cregexp(/[0-9]0+/)
-  #
-  #   it 'yields the string on match, and consumes it' do
-  #     result = parser.parse('100j')
-  #
-  #     expect(result.succeed?).to be true
-  #     expect(result.remaining).to eq('j')
-  #     expect(result.completed?).to be false
-  #
-  #     expect(result.value).to eq('100')
-  #   end
-  #
-  #   it 'succeds and completes when matches the whole string' do
-  #     result = parser.parse('100')
-  #
-  #     expect(result.succeed?).to be true
-  #     expect(result.completed?).to be true
-  #
-  #     expect(result.value).to eq('100')
-  #   end
-  #
-  #   it 'fails when does not match the regex from the start' do
-  #     result = parser.parse('j100')
-  #
-  #     expect(result.succeed?).to be false
-  #     expect(result.completed?).to be false
-  #
-  #     expect(result.expected).to eq([/[0-9]0+/])
-  #   end
-  # end
-
-  context 'Convoy#regexp' do
+  describe '#regexp' do
     parser = Convoy.regexp(/[0-9]0+/)
 
-    it 'searches for a match in the input string, yields it ' do
+    it 'searches for a match in the input string, yields it' do
       result = parser.parse('100j')
 
       expect(result.succeed?).to be true
@@ -57,9 +25,18 @@ describe Convoy, 'combinators' do
 
       expect(result.value).to eq('100')
     end
+
+    it 'fails when it does not match a regex from the start' do
+      result = parser.parse('j100')
+
+      expect(result.succeed?).to be false
+      expect(result.completed?).to be false
+
+      expect(result.expected).to eq([/[0-9]0+/])
+    end
   end
 
-  context 'Convoy#one_of' do
+  describe '#one_of' do
     parser = Convoy.one_of('123')
 
     it 'looks for exactly one character from the given string, and yields that character' do
@@ -81,7 +58,7 @@ describe Convoy, 'combinators' do
     end
   end
 
-  context 'Convoy#string' do
+  describe '#string' do
     parser = Convoy.string('Hi!')
 
     it 'matches whole string and consumes it' do
@@ -97,6 +74,16 @@ describe Convoy, 'combinators' do
       expect(result.failed?).to be true
       expect(result.expected).to eq ['Hi!']
       expect(result.furthest).to eq 1
+    end
+  end
+
+  describe '#all' do
+    it 'consumes the whole input, and yields it' do
+      result = Convoy.all.parse 42
+
+      expect(result.succeed?).to be true
+      expect(result.completed?).to be true
+      expect(result.value).to eq 42
     end
   end
 end

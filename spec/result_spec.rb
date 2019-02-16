@@ -18,4 +18,14 @@ describe Result do
       expect(result.succeed?).to be true
     end
   end
+
+  context 'did complete' do
+    success = Success.new(nil, nil, 'x')
+    failure = Success.new(nil, [], 'x')
+
+    it 'when there is still input to be consumed, and does not matter if it succeeded or not' do
+      expect(success.completed?).to be false
+      expect(failure.completed?).to be false
+    end
+  end
 end

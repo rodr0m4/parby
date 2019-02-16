@@ -9,7 +9,7 @@ module Convoy
     end
 
     def completed?
-      remaining.nil? || remaining == ''
+      remaining.nil?
     end
   end
 
