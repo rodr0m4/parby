@@ -1,10 +1,8 @@
 module Convoy
   class Parser
-    # { |input, index| } -> result
+    # { |input, index| } -> result or { |input| } -> result
     def initialize(&block)
-      if !block_given?
-        raise ArgumentError.new('A bare parser must be initialized with a 1 or 2 argument block')
-      end
+      raise(ArgumentError, 'A bare parser must be initialized with a 1 or 2 argument block') unless block_given?
 
       @block = block
     end
@@ -17,7 +15,7 @@ module Convoy
       end
     end
 
-    def or another_parser
+    def or(another_parser)
       Parser.new do |input, index|
         first = parse(input, index)
 
@@ -29,12 +27,11 @@ module Convoy
       end
     end
 
-    def | another_parser
-      self.or another_parser
+    def |(other)
+      self.or other
     end
 
-
-    def and another_parser
+    def and(another_parser)
       Parser.new do |input, index|
         first = parse(input, index)
 
@@ -46,12 +43,12 @@ module Convoy
       end
     end
 
-    def >> another_parser
-      self.and another_parser
+    def >>(other)
+      self.and other
     end
   end
 
-  Result = Struct.new("Result", :status, :index, :value, :furthest, :expected, :remaining) do
+  Result = Struct.new('Result', :status, :index, :value, :furthest, :expected, :remaining) do
     def failed?
       !status
     end
@@ -73,9 +70,8 @@ module Convoy
 
   class Failure < Result
     def initialize(furthest, expected, remaining = nil)
-      actual_expected = expected if expected.kind_of?(Array) else [expected]
+      actual_expected = if expected.is_a?(Array) then expected else [expected] end
       super(false, -1, nil, furthest, actual_expected, remaining)
     end
   end
-
 end
