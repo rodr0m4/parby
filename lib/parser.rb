@@ -47,7 +47,7 @@ module Convoy
       self.and other
     end
 
-    def map(&block)
+    def fmap(&block)
       Parser.new do |input, index|
         result = parse(input, index)
 
@@ -57,6 +57,10 @@ module Convoy
 
         result
       end
+    end
+
+    def map(&block)
+      fmap(&block)
     end
   end
 
