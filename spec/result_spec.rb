@@ -5,8 +5,8 @@ describe Result do
     result = Failure.new(10, ['stuff'])
 
     it 'when the status is false' do
-      expect(result.failed?).to be false
-      expect(result.succeed?).to be true
+      expect(result.failed?).to be true
+      expect(result.succeded?).to be false
     end
   end
 
@@ -14,8 +14,8 @@ describe Result do
     result = Success.new(1, nil)
 
     it 'when the status is true' do
-      expect(result.failed?).to be true
-      expect(result.succeed?).to be false
+      expect(result.failed?).to be false
+      expect(result.succeded?).to be true
     end
   end
 end

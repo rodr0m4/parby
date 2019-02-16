@@ -16,6 +16,22 @@ module Convoy
         @block.call(args[0], args[1])
       end
     end
+
+    def or another_parser
+      Parser.new do |input, index|
+        first = parse(input, index)
+
+        if first.failed?
+          another_parser.parse(input, index)
+        else
+          first
+        end
+      end
+    end
+
+    def | another_parser
+      self.or another_parser
+    end
   end
 
   Result = Struct.new("Result", :status, :index, :value, :furthest, :expected, :remaining) do
@@ -23,7 +39,7 @@ module Convoy
       !status
     end
 
-    def succeed?
+    def succeded?
       status
     end
 
