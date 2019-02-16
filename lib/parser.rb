@@ -32,6 +32,23 @@ module Convoy
     def | another_parser
       self.or another_parser
     end
+
+
+    def and another_parser
+      Parser.new do |input, index|
+        first = parse(input, index)
+
+        if first.failed?
+          first
+        else
+          another_parser.parse(first.remaining, first.index)
+        end
+      end
+    end
+
+    def >> another_parser
+      self.and another_parser
+    end
   end
 
   Result = Struct.new("Result", :status, :index, :value, :furthest, :expected, :remaining) do

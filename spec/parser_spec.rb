@@ -47,3 +47,26 @@ describe Parser, '#|' do
     end
   end
 end
+
+describe Parser, '#>>' do
+  context('Given two parsers') do
+    first_parser = Convoy.regexp(/0/)
+    second_parser = spy(Convoy.regexp(/[0-9]+/))
+
+    parser = first_parser >> second_parser
+
+    it('Both should have to match to succeed, but only the second value is yielded') do
+      result = parser.parse('00')
+
+      expect(result.succeded?).to be true
+      expect(result.value).to eq('00')
+    end
+
+    it('When the first one fails, the other one is not called') do
+      result = parser.parse('lol')
+
+      expect(result.failed?).to be true
+      expect(second_parser).to_not have_received(:parse)
+    end
+  end
+end
