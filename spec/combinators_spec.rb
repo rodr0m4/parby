@@ -13,10 +13,10 @@ describe Convoy, 'combinators' do
     end
   end
 
-  context 'Convoy::regexp' do
-    parser = Convoy.regexp(/[0-9]0+/)
+  context 'Convoy::cregexp' do
+    parser = Convoy.cregexp(/[0-9]0+/)
 
-    it 'succeeds when matches some part of the string' do
+    it 'yields the string on match, and consumes it' do
       result = parser.parse('100j')
 
       expect(result.succeed?).to be true
@@ -42,6 +42,19 @@ describe Convoy, 'combinators' do
       expect(result.completed?).to be false
 
       expect(result.expected).to eq([/[0-9]0+/])
+    end
+  end
+
+  context 'Convoy::regexp' do
+    parser = Convoy.regexp(/[0-9]0+/)
+    it 'is like regexp, but it does not consume the string it matches' do
+      result = parser.parse('100j')
+
+      expect(result.succeed?).to be true
+      expect(result.completed?).to be false
+      expect(result.remaining).to eq('100j')
+
+      expect(result.value).to eq('100')
     end
   end
 end
