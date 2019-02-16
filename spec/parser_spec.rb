@@ -89,39 +89,3 @@ describe Parser, '#map' do
     # We still have to test for not calling the mapper function when the parser fails, but I can't mock the block :(
   end
 end
-
-describe Parser, '#consuming' do
-  context 'any parser' do
-    first_parser = Convoy.of(2)
-    second_parser = Convoy.regexp(/lol/)
-    first_parser_with_consumption = first_parser.consuming
-    second_parser_with_consumption = second_parser.consuming
-
-    first_result = first_parser_with_consumption.parse 'some text'
-    second_result = second_parser_with_consumption.parse 'lol123'
-
-    it 'can be transformer into a consuming parser with #consuming' do
-      expect(first_result.succeed?).to be true
-      expect(second_result.succeed?).to be true
-
-      expect(first_result.completed?).to be true
-      expect(second_result.remaining).to eq '123'
-    end
-
-    it 'can be transformed back with #non_consuming' do
-      first_parser_back = first_parser_with_consumption.non_consuming
-      second_parser_back = second_parser_with_consumption.non_consuming
-
-      first_result_proper = first_parser.parse 'some text'
-      second_result_proper = second_parser.parse 'lol123'
-
-      first_result_back = first_parser_back.parse 'some text'
-      second_result_back = second_parser_back.parse 'lol123'
-
-      puts second_result
-
-      expect(first_result_back).to eq first_result_proper
-      expect(second_result_back).to eq second_result_proper
-    end
-  end
-end

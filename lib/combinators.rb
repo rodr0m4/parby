@@ -3,7 +3,7 @@ require 'parser'
 module Convoy
   # Always yields the value passed to it, no matter the input
   def of(value)
-    Parser.new { |_, index| Success.new(index, value) }
+    Parser.new { |input, index| Success.new(index, value, input) }
   end
 
   # Yields the input, if it matches the regex passed to it
@@ -18,15 +18,9 @@ module Convoy
         # We did not even match one letter
         Failure.new(index, [regex], input)
       else
-        # We did match, but there is still more to consume
         Success.new(index, match_data[0], input)
       end
     end
-  end
-
-  # Like #regexp, but it consumes the input
-  def cregexp(regex)
-    regexp(regex).consuming
   end
 
   # Searches in the input for one of the given characters (characters can be either a string or an array), and yields it
@@ -45,15 +39,6 @@ module Convoy
       else
         Success.new(index, input[found_index], input)
       end
-    end
-  end
-
-  # Looks for the matching string (or regex) at the start of input, does not consume it
-  def lookahead(string_or_regexp)
-    if string_or_regexp.is_a?(Regexp)
-      return regexp(string_or_regexp).non_consuming
-    else
-      return string(string_or_regexp)
     end
   end
 

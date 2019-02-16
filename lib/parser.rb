@@ -62,31 +62,5 @@ module Convoy
     def map(&block)
       fmap(&block)
     end
-
-    def consuming
-      Parser.new do |input, index|
-        result = parse(input, index)
-
-        if result.failed? || result.completed?
-          result
-        else
-          remaining = (result.remaining.split('') - result.value.split('')).join('')
-          Success.new(index, result.value, remaining)
-        end
-      end
-    end
-
-    def non_consuming
-      Parser.new do |input, index|
-        result = parse(input, index)
-
-        if result.failed? || result.completed?
-          result
-        else
-          remaining = result.value + result.remaining
-          Success.new(index, result.value, remaining)
-        end
-      end
-    end
   end
 end
