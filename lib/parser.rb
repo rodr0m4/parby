@@ -20,11 +20,11 @@ module Convoy
 
   Result = Struct.new("Result", :status, :index, :value, :furthest, :expected, :remaining) do
     def failed?
-      status
+      !status
     end
 
     def succeed?
-      !status
+      status
     end
 
     def completed?

@@ -12,18 +12,18 @@ module Convoy
     real_regex = /^#{regex}/
 
     Parser.new { |input, index|
-      real_regex.match(input) { |match_data|
-        if match_data == nil
-          # We did not even match one letter
-          Failure.new(index, regex, input)
-        elsif match_data.post_match != nil
-          # We did match, but there is still more to consume
-          Success.new(index, match_data[0], match_data.post_match)
-        else
-          # We did consume the whole string
-          Success.new(index, match_data[0], nil)
-        end
-      }
+      match_data = real_regex.match(input)
+
+      if match_data == nil
+        # We did not even match one letter
+        Failure.new(index, [regex], input)
+      elsif match_data.post_match != nil
+        # We did match, but there is still more to consume
+        Success.new(index, match_data[0], match_data.post_match)
+      else
+        # We did consume the whole string
+        Success.new(index, match_data[0], nil)
+      end
     }
   end
 end
