@@ -1,7 +1,7 @@
 require 'spec_helper.rb'
 
 describe Parser do
-  include Convoy
+  include Parby
 
   describe '#initialize' do
     context 'not passing a block' do
@@ -31,7 +31,7 @@ describe Parser do
 
   describe '#or' do
     context 'Given two parsers' do
-      parser = Convoy.regexp(/42/) | Convoy.of(42)
+      parser = Parby.regexp(/42/) | Parby.of(42)
 
       it 'When the first one succeeds it yields, not calling the second one' do
         result = parser.parse('42')
@@ -51,10 +51,10 @@ describe Parser do
 
   describe '#and' do
     context 'Given two parsers' do
-      first_parser = Convoy.regexp(/0/)
+      first_parser = Parby.regexp(/0/)
 
       it 'Both should have to match to succeed, but only the second value is yielded' do
-        second_parser = Convoy.regexp(/[0-9]+/)
+        second_parser = Parby.regexp(/[0-9]+/)
         parser = first_parser >> second_parser
 
         result = parser.parse('00')
@@ -64,7 +64,7 @@ describe Parser do
       end
 
       it 'When the first one fails, the other one is not called' do
-        second_parser = spy(Convoy.regexp(/[0-9]+/))
+        second_parser = spy(Parby.regexp(/[0-9]+/))
         parser = first_parser >> second_parser
 
         result = parser.parse('lol')

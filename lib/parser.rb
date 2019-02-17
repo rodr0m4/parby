@@ -1,4 +1,4 @@
-module Convoy
+module Parby
   class Parser
     # { |input, index| } -> result or { |input| } -> result
     def initialize(&block)

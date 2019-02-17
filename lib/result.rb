@@ -1,4 +1,4 @@
-module Convoy
+module Parby
   Result = Struct.new('Result', :status, :index, :value, :furthest, :expected, :remaining) do
     def failed?
       !status

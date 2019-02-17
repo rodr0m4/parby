@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Convoy, '#of' do
+describe Parby, '#of' do
   describe '#of' do
-    parser = Convoy.of(2)
+    parser = Parby.of(2)
 
     it 'Always succeeds' do
       first_result = parser.parse('something')
@@ -14,7 +14,7 @@ describe Convoy, '#of' do
   end
 
   describe '#regexp' do
-    parser = Convoy.regexp(/[0-9]0+/)
+    parser = Parby.regexp(/[0-9]0+/)
 
     it 'searches for a match in the input string, yields it' do
       result = parser.parse('100j')
@@ -38,7 +38,7 @@ describe Convoy, '#of' do
 
   describe '#test' do
     context 'given a predicate' do
-      parser = Convoy.test(Proc.new { |c| c.between?('a', 'z') }, 'Alphanumeric character') # This is how Convoy#between is implemented
+      parser = Parby.test(Proc.new { |c| c.between?('a', 'z') }, 'Alphanumeric character') # This is how Parby#between is implemented
 
       context 'applies the predicate to each character in input' do
         context 'if it matches in the first character' do
@@ -77,7 +77,7 @@ describe Convoy, '#of' do
   end
 
   describe '#one_of' do
-    parser = Convoy.one_of('123')
+    parser = Parby.one_of('123')
 
     it 'looks for exactly one character from the given string, and yields that character' do
       result = parser.parse('jmvbn2')
@@ -99,7 +99,7 @@ describe Convoy, '#of' do
   end
 
   describe '#none_of' do
-    parser = Convoy.none_of '123'
+    parser = Parby.none_of '123'
 
     it 'succeeds when it founds a character not in the string, and yields it' do
       result = parser.parse '1kl'
@@ -111,7 +111,7 @@ describe Convoy, '#of' do
   end
 
   describe '#string' do
-    parser = Convoy.string('Hi!')
+    parser = Parby.string('Hi!')
 
     it 'matches whole string and consumes it' do
       result = parser.parse 'Hi!'
@@ -131,7 +131,7 @@ describe Convoy, '#of' do
 
   describe '#all' do
     it 'consumes the whole input, and yields it' do
-      result = Convoy.all.parse 42
+      result = Parby.all.parse 42
 
       expect(result.succeed?).to be true
       expect(result.completed?).to be true
