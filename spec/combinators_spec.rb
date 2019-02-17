@@ -38,18 +38,39 @@ describe Convoy, '#of' do
 
   describe '#test' do
     context 'given a predicate' do
-      parser = Convoy.test Proc.new { |c| c.between?('a', 'z') } # This is how Convoy#between is implemented
+      parser = Convoy.test(Proc.new { |c| c.between?('a', 'z') }, 'Alphanumeric character') # This is how Convoy#between is implemented
 
       context 'applies the predicate to each character in input' do
-        matches_first = parser.parse 'airplane'
-        # matches_in_the_middle = parser.parse '_eval'
-        # does_not_match = parser. parse '>>='
-        
-        it 'if it matches the first character, yields and does not consume the input' do
-          expect(matches_first.succeed?).to be true
-          expect(matches_first.completed?).to be false
-          expect(matches_first.value).to eq 'a'
-          expect(matches_first.remaining).to eq 'airplane'
+        context 'if it matches in the first character' do
+          matches_first = parser.parse 'airplane'
+
+          it 'yields and does not consume the input' do
+            expect(matches_first.succeed?).to be true
+            expect(matches_first.completed?).to be false
+            expect(matches_first.value).to eq 'a'
+            expect(matches_first.remaining).to eq 'airplane'
+          end
+        end
+
+        context 'if it matches in the middle of the string' do
+          matches_in_the_middle = parser.parse '_eval'
+
+          it 'yields and does not consume the input' do
+            expect(matches_in_the_middle.succeed?).to be true
+            expect(matches_in_the_middle.completed?).to be false
+            expect(matches_in_the_middle.value).to eq 'e'
+            expect(matches_in_the_middle.remaining).to eq '_eval'
+          end
+        end
+
+        context 'if it does not match' do
+          does_not_match = parser. parse '>>='
+
+          it 'fails with the given message and does not consume the input' do
+            expect(does_not_match.failed?).to be true
+            expect(does_not_match.expected).to eq ['Alphanumeric character']
+            expect(does_not_match.remaining).to eq '>>='
+          end
         end
       end
     end
