@@ -44,21 +44,8 @@ module Convoy
 
   # Searches in the input for one of the given characters (characters can be either a string or an array), and yields it
   def one_of(characters)
-    Parser.new do |input, index|
-      expected = if characters.is_a?(Array) then characters else characters.split('') end
-
-      found_index = expected.inject(nil) do |index_found, next_character|
-        break index_found unless index_found.nil?
-
-        input.index(next_character)
-      end
-
-      if found_index.nil?
-        Failure.new(input.length, expected, input)
-      else
-        Success.new(index, input[found_index], input)
-      end
-    end
+    expected = if characters.is_a?(Array) then characters else characters.split('') end
+    test(Proc.new { |c| expected.include?(c) }, expected)
   end
 
   def none_of(characters)
