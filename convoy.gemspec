@@ -1,10 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'convoy'
-<<<<<<< HEAD
   s.version = '0.1.0'
-=======
-  s.version = '0.0.1'
->>>>>>> 92fb129... Added gemspec
   s.date = '2019-02-17'
   s.summary = 'Happy little parser combinators'
   s.authors = ['Rodrigo Martin']
