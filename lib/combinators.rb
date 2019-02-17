@@ -49,22 +49,7 @@ module Convoy
   end
 
   def none_of(characters)
-    Parser.new do |input, index|
-      found_character, found_index = nil
-
-      input.split('').each_with_index do |character, current_index|
-          unless characters.include? character
-            found_character, found_index = character, current_index
-            break
-          end
-      end
-
-      if found_character
-        Success.new(found_index, found_character, input)
-      else
-        Failure.new(input.length, ["None of #{characters}"], input)
-      end
-    end
+    test(Proc.new { |c| !characters.include?(c) }, ["None of #{characters}"])
   end
 
   def string(str)
