@@ -76,11 +76,11 @@ describe Parser do
   end
 
   describe '#map' do
-    context('Given a parser mapped with a mapping block') do
+    context 'Given a parser mapped with a mapping block' do
       first_parser = Parser.regexp(/42/)
       parser = first_parser.map(&:to_i)
 
-      it('when the parser yields, it will apply the block to the resulting value') do
+      it 'when the parser yields, it will apply the block to the resulting value' do
         result = parser.parse('42')
 
         expect(result.succeed?).to be true
@@ -88,6 +88,23 @@ describe Parser do
       end
 
       # We still have to test for not calling the mapper function when the parser fails, but I can't mock the block :(
+    end
+  end
+
+  describe '#consuming' do
+    context 'Given a non-consuming parser' do
+      parser = regexp(/42/)
+      input = '42'
+      non_consuming_result = parser.parse input
+
+      it 'Converts it into a consuming one' do
+        consuming_result = parser.consuming.parse input
+
+        expect(consuming_result.succeed?).to be(non_consuming_result.succeed?)
+        expect(consuming_result.value).to eq(non_consuming_result.value)
+        expect(non_consuming_result.completed?).not_to be true
+        expect(consuming_result.completed?).to be true
+      end
     end
   end
 end

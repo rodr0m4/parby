@@ -6,6 +6,25 @@ module Convoy
     Parser.new { |input, index| Success.new(index, value, input) }
   end
 
+  # Yields the first character that matches predicate, it fails with the given message, otherwise a generic one
+  def test(predicate, description = nil)
+    Parser.new do |input, index|
+      found = nil
+      input.split('').each do |character|
+        if predicate.call(character)
+          found = character
+          break
+        end
+      end
+
+      if found
+        Success.new(index, found, input)
+      else
+        Failure.new(index, [description || 'Matching a predicate'], input)
+      end
+    end
+  end
+
   # Yields the input, if it matches the regex passed to it
   def regexp(regex)
     # We have to match from the beginning
@@ -38,6 +57,25 @@ module Convoy
         Failure.new(input.length, expected, input)
       else
         Success.new(index, input[found_index], input)
+      end
+    end
+  end
+
+  def none_of(characters)
+    Parser.new do |input, index|
+      found_character, found_index = nil
+
+      input.split('').each_with_index do |character, current_index|
+          unless characters.include? character
+            found_character, found_index = character, current_index
+            break
+          end
+      end
+
+      if found_character
+        Success.new(found_index, found_character, input)
+      else
+        Failure.new(input.length, ["None of #{characters}"], input)
       end
     end
   end

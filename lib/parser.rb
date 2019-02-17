@@ -62,5 +62,9 @@ module Convoy
     def map(&block)
       fmap(&block)
     end
+
+    def consuming
+      self >> all
+    end
   end
 end

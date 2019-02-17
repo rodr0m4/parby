@@ -36,6 +36,25 @@ describe Convoy, '#of' do
     end
   end
 
+  describe '#test' do
+    context 'given a predicate' do
+      parser = Convoy.test Proc.new { |c| c.between?('a', 'z') } # This is how Convoy#between is implemented
+
+      context 'applies the predicate to each character in input' do
+        matches_first = parser.parse 'airplane'
+        # matches_in_the_middle = parser.parse '_eval'
+        # does_not_match = parser. parse '>>='
+        
+        it 'if it matches the first character, yields and does not consume the input' do
+          expect(matches_first.succeed?).to be true
+          expect(matches_first.completed?).to be false
+          expect(matches_first.value).to eq 'a'
+          expect(matches_first.remaining).to eq 'airplane'
+        end
+      end
+    end
+  end
+
   describe '#one_of' do
     parser = Convoy.one_of('123')
 
@@ -48,13 +67,25 @@ describe Convoy, '#of' do
       expect(result.value).to eq('2')
     end
 
-    it 'it short circuits' do
+    it 'short circuits' do
       result = parser.parse('123')
 
       expect(result.succeed?).to be true
       expect(result.remaining).to eq('123')
 
       expect(result.value).to eq('1')
+    end
+  end
+
+  describe '#none_of' do
+    parser = Convoy.none_of '123'
+
+    it 'succeeds when it founds a character not in the string, and yields it' do
+      result = parser.parse '1kl'
+
+      expect(result.succeed?).to be true
+      expect(result.value).to eq 'k'
+      expect(result.remaining).to eq '1kl'
     end
   end
 
