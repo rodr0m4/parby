@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.summary = 'Happy little parser combinators'
   s.authors = ['Rodrigo Martin']
   s.email = 'rodrigoleonardomartin@gmail.com'
-  s.files = ['lib/combinators.rb', 'lib/parser.rb', 'lib/result.rb']
+  s.files = `git ls-files -- lib/*`.split("\n")
   s.metadata = { "source_code_uri" => "https://github.com/rodr0m4/parby" }
   s.license = 'MIT'
 
