@@ -64,7 +64,7 @@ module Parby
     end
 
     def consuming
-      self >> all
+      self >> Parby.all
     end
   end
 end

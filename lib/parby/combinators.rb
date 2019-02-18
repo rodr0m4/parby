@@ -1,4 +1,4 @@
-require 'parser'
+require_relative 'parser'
 
 module Parby
   # Always yields the value passed to it, no matter the input
@@ -7,7 +7,7 @@ module Parby
   end
 
   # Yields the first character that matches predicate, it fails with the given message, otherwise a generic one
-  def test(predicate, description = nil)
+  def self.test(predicate, description = nil)
     Parser.new do |input, index|
       found = nil
       input.split('').each do |character|
@@ -26,7 +26,7 @@ module Parby
   end
 
   # Yields the input, if it matches the regex passed to it
-  def regexp(regex)
+  def self.regexp(regex)
     # We have to match from the beginning
     real_regex = /^#{regex}/
 
@@ -43,16 +43,16 @@ module Parby
   end
 
   # Searches in the input for one of the given characters (characters can be either a string or an array), and yields it
-  def one_of(characters)
+  def self.one_of(characters)
     expected = if characters.is_a?(Array) then characters else characters.split('') end
     test(Proc.new { |c| expected.include?(c) }, expected)
   end
 
-  def none_of(characters)
+  def self.none_of(characters)
     test(Proc.new { |c| !characters.include?(c) }, ["None of #{characters}"])
   end
 
-  def string(str)
+  def self.string(str)
     Parser.new do |input, index|
       furthest = -1
 
@@ -78,7 +78,7 @@ module Parby
     end
   end
 
-  def all
+  def self.all
     Parser.new do |input, index|
       Success.new(index, input, nil)
     end

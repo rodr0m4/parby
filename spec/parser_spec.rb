@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Parser do
-  include Parby
-
   describe '#initialize' do
     context 'not passing a block' do
       it 'raises' do
@@ -77,7 +75,7 @@ describe Parser do
 
   describe '#map' do
     context 'Given a parser mapped with a mapping block' do
-      first_parser = Parser.regexp(/42/)
+      first_parser = Parby.regexp(/42/)
       parser = first_parser.map(&:to_i)
 
       it 'when the parser yields, it will apply the block to the resulting value' do
@@ -93,7 +91,7 @@ describe Parser do
 
   describe '#consuming' do
     context 'Given a non-consuming parser' do
-      parser = regexp(/42/)
+      parser = Parby.regexp(/42/)
       input = '42'
       non_consuming_result = parser.parse input
 

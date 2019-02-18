@@ -1,3 +1,3 @@
-require 'parby/combinators'
 require 'parby/parser'
+require 'parby/combinators'
 require 'parby/result'
