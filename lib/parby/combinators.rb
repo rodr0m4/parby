@@ -1,4 +1,4 @@
-require_relative 'parser'
+require 'parby/parser'
 
 module Parby
   # Always yields the value passed to it, no matter the input
@@ -40,6 +40,10 @@ module Parby
         Success.new(index, match_data[0], input)
       end
     end
+  end
+
+  def self.regex(regex)
+    return self.regexp(regex)
   end
 
   # Searches in the input for one of the given characters (characters can be either a string or an array), and yields it
