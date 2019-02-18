@@ -1,6 +1,4 @@
-require './lib/combinators.rb'
-require './lib/parser.rb'
-require './lib/result.rb'
+require 'parby'
 
 include RSpec
 include Parby

@@ -2,7 +2,7 @@ require 'parser'
 
 module Parby
   # Always yields the value passed to it, no matter the input
-  def of(value)
+  def self.of(value)
     Parser.new { |input, index| Success.new(index, value, input) }
   end
 
